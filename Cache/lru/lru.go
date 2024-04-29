@@ -48,10 +48,11 @@ func (c *Cache)Get(key string)(value Value,ok bool){
 }
 
 // Add 新增/修改
+/* 
+	
+ */
 func (c *Cache)Add(key string,value Value){
 	
 }
 
 // RemoveOldest 删除(移除最近最少访问的节点(队首))
-
-
