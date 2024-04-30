@@ -1,7 +1,9 @@
 package session
 
 import (
+	"7day/orm/dialect"
 	"7day/orm/log"
+	"7day/orm/schema"
 	"database/sql"
 	"strings"
 )
@@ -9,12 +11,17 @@ import (
 //数据库交互
 type Session struct {
 	db      *sql.DB
+	dialect	dialect.Dialect
+	refTable *schema.Schema
 	sql     strings.Builder //拼接sql语句
 	sqlVars []interface{}   //语句中对应的占位符
 }
 
-func New(db *sql.DB) *Session{
-	return &Session{db: db}
+func New(db *sql.DB,dialect dialect.Dialect) *Session{
+	return &Session{
+		db: db,
+		dialect: dialect,
+	}
 }
 
 func (s *Session)Clear()  {
