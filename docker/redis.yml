@@ -1,0 +1,20 @@
+version: '3'
+services:
+  redis:
+    image: 'bitnami/redis:latest'
+    container_name: redis
+    restart: no
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - ./redis/data/db:/data
+      - ./redis/data/logs:/logs
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    ports:
+      - 6379:6379
+    networks:
+      - my-network
+networks:
+  my-network: 
+    external: true
+    name: egoist

@@ -1,0 +1,26 @@
+# 表示api的组别和版本,除了apps还有batch autoscaling等组别和v1,v1beta等版本
+apiVersion: apps/v1
+# 资源对象的类型
+kind: Deployment
+# 定义资源对象的原数据,如名称,标签,命名空间等
+metadata:
+  name: nginx-deployment
+# specification 规范  定义资源对象的配置信息,第一个spec定义定义dep的配置
+spec:
+# 选择器一般和labels一起使用
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 3
+  # 定义了pod的配置信息
+  template:
+    metadata:
+     labels:
+       app: nginx
+      #  第二个spec定义pod的配置
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.25
+          ports: 
+            - containerPort: 80

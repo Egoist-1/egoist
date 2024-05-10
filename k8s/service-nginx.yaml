@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  # 服务类型,没有指定默认就是集群内部服务
+  type: NodePort
+  # 选择pod标签
+  selector:
+    app: nginx
+  ports:
+  # 协议
+  - protocol: TCP
+  # 对外暴露的端口
+    port: 80
+  # 服务后买你对应pod的端口 
+    targetPort: 80
+    # 范围在30000-32767之间
+    nodePort: 30080
+
+
+
+# Service 种类
+# ClusterIP     默认类型,集群内部的服务  
+# NodePort      节点端口类型,将服务公开到集群节点上
+# LoadBalancer  负载均衡类型,将服务公开到外部负载君和器上
+# ExternalName  外部名称类型,将服务映射到一个外部域名上
+# Headless      无头类型.主要用于dns解析和服务发现
