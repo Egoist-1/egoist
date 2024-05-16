@@ -1,7 +1,7 @@
 package schema
 
 import (
-	"7day/orm/dialect"
+	"7day/7day/orm/dialect"
 	"testing"
 )
 

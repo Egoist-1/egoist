@@ -1,10 +1,10 @@
 package session
 
 import (
-	"7day/orm/clause"
-	"7day/orm/dialect"
-	"7day/orm/log"
-	"7day/orm/schema"
+	"7day/7day/orm/clause"
+	"7day/7day/orm/dialect"
+	"7day/7day/orm/log"
+	"7day/7day/orm/schema"
 	"database/sql"
 	"strings"
 )

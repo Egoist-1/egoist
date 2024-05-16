@@ -3,7 +3,7 @@ services:
   mongo:
     image: mongo:7.0.10-rc0
     container_name: mongodb
-    restart: no
+    restart: 'no'  
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root

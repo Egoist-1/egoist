@@ -3,7 +3,7 @@ services:
   elasticsearch:
     image: elasticsearch:7.12.1
     container_name: elasticsearch   
-    restart: no  # 定义容器退出后,Docker如何处理容器
+    restart: 'no'  
     environment:
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
       - cluster.name=docker-cluster #集群名称
@@ -11,9 +11,9 @@ services:
       - http.host=0.0.0.0
     volumes:
       - ./es/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-      - ./es/data:/usr/share/elasticsearch/data  #绑定es的数据目录
-      - ./es/logs:/usr/share/elasticsearch/logs  #绑定es的日志目录
-      - ./es/plugins:/usr/share/elasticsearch/plugins #绑定es的插件目录
+      - ./es/data:/usr/share/elasticsearch/data  
+      - ./es/logs:/usr/share/elasticsearch/logs  
+      - ./es/plugins:/usr/share/elasticsearch/plugins 
     ports:
       - 9200:9200
     networks:
@@ -21,7 +21,7 @@ services:
   kibana:
     image: kibana:7.12.1
     container_name: kibana
-    restart: no
+    restart: 'no'
     environment:
       ELASTICSERCH_HOSTS: http://elk:9200
       I18N_LOCALE: zh-CN

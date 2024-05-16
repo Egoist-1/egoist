@@ -3,7 +3,7 @@ services:
   mysql:
     image: mysql:8.0
     container_name: mysql8.0
-    restart: no
+    restart: 'no'  
     command: 
       --default-authentication-plugin=mysql_native_password
       --character-set-server=utf8mb4
@@ -13,7 +13,6 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - ./script/mysql/:/docker-entrypoint-initdb.d/
       - ./mysql/data:/var/lib/mysql
       - ./mysql/conf:/etc/mysql/conf.d
       - ./mysql/log:/var/log/mysql

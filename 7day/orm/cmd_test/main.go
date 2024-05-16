@@ -2,7 +2,7 @@ package main
 
 import (
 
-	"7day/orm"
+	"7day/7day/orm"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
 )

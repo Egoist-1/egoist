@@ -1,19 +1,20 @@
 version: '3'
 services:
   redis:
-    image: 'bitnami/redis:latest'
+    image: redis:7.2.4
     container_name: redis
-    restart: no
+    restart: 'no'
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
-    volumes:
-      - ./redis/data/db:/data
-      - ./redis/data/logs:/logs
-      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+      - http.host=0.0.0.0
     ports:
       - 6379:6379
+      - 6380:6380
     networks:
       - my-network
+    volumes:
+      - ./redis/data:/data:rw
+    command: redis-server redis-6380.conf
 networks:
   my-network: 
     external: true

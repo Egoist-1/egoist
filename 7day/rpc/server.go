@@ -1,7 +1,7 @@
 package rpc
 
 import (
-	"7day/rpc/codec"
+	"7day/7day/rpc/codec"
 	"io"
 	"log"
 	"net"
@@ -40,7 +40,7 @@ func (s *Server)Accept(lis net.Listener) {
 			log.Println("rpc server: accept errpr:",err)
 			return
 		}
-		go server.ServerConn(conn)
+		go s.ServerConn(conn)
 		}	
 }
 

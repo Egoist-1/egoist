@@ -1,7 +1,7 @@
 package session
 
 import (
-	"7day/orm/clause"
+	"7day/7day/orm/clause"
 	"reflect"
 )
 // TODO Insert未看懂

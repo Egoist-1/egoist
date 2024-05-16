@@ -2,18 +2,12 @@ version: '3'
 services:
   portainer:
 #    portainer来查看可视化容器页面：
-    image: portainer/portainer
+    image: portainer/portainer-ce:2.16.0
     container_name: portainer
     ports:
       - 9000:9000
-    restart: no
+      - 8000:8000
+    restart: always 
     volumes:
-      - ./portainer/localtime:/etc/localtime
-      - ./portainer/run/docker.sock:/var/run/docker.sock
-      - ./portainer/data:/data:rw
-    networks:
-      - my-network
-networks:
-  my-network: 
-    external: true
-    name: egoist
+       - /var/run/docker.sock:/var/run/docker.sock
+       - ./portainer/data:/data:rw

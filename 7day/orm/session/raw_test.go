@@ -1,7 +1,7 @@
 package session
 
 import (
-	"7day/orm/dialect"
+	"7day/7day/orm/dialect"
 	"database/sql"
 	"os"
 	"testing"

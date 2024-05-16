@@ -1,8 +1,8 @@
 package session
 
 import (
-	"7day/orm/log"
-	"7day/orm/schema"
+	"7day/7day/orm/log"
+	"7day/7day/orm/schema"
 	"fmt"
 	"reflect"
 	"strings"
