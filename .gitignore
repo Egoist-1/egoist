@@ -1,6 +1,5 @@
 .vscode
 *.db
-test.txt
 账号.md
 接口.md
 docker/es

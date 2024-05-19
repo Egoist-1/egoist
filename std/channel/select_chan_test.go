@@ -1,4 +1,4 @@
-package contextlearning_test
+package channel
 
 import (
 	"fmt"

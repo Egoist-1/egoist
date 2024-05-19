@@ -6,6 +6,8 @@ import (
 	"testing"
 	"unicode"
 ) 
+
+//综合易用性和性能，一般推荐使用 strings.Builder 来拼接字符串。
 func Test_stringsV1(t *testing.T)  {
 	fmt.Println(strings.ContainsAny("failu re", "z & i"))//t
 	//当 sep 为空时，Count 的返回值是：utf8.RuneCountInString(s) + 1

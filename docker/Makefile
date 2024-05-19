@@ -29,6 +29,6 @@ down:
 	# @docker compose -f prometheus.yml 	 	down
 	@docker compose -f rabbit.yml			down
 	@docker compose -f redis.yml 		 	down
-desktop:
-	@systemctl --user enable docker-desktop
-	@systemctl --user stop docker-desktop
+d:
+	@sudo systemctl start docker
+	@sudo systemctl stop  docker
