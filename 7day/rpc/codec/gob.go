@@ -7,58 +7,51 @@ import (
 	"log"
 )
 
+// var  _ Codec = (*GobCodec)(nil)
 
-var _ Codec = (*GobCodec)(nil)
-// GobCodec Codec的实现 
-/* 
-conn 是由构建函数传入，通常是通过 TCP 或者 Unix 建立 socket 时得到的链接实例，
-dec 和 enc 对应 gob 的 Decoder 和 Encoder，
-buf 是为了防止阻塞而创建的带缓冲的 Writer，一般这么做能提升性能。
- */
 type GobCodec struct {
-	conn io.ReadWriteCloser
-	buf *bufio.Writer
-	dec *gob.Decoder
-	enc *gob.Encoder
+	conn io.ReadWriteCloser //连接实例
+	buf  *bufio.Writer      //防止阻塞创建带缓存的writer
+	dec  *gob.Decoder       //解码
+	enc  *gob.Encoder       //编码
 }
 
 func NewGobCodec(conn io.ReadWriteCloser) Codec{
 	buf := bufio.NewWriter(conn)
 	return &GobCodec{
 		conn: conn,
-		buf: buf,
-		dec: gob.NewDecoder(conn),
-		enc: gob.NewEncoder(buf),
+		buf:  buf,
+		dec:  gob.NewDecoder(conn),
+		enc:  gob.NewEncoder(buf),
 	}
 }
-func (c *GobCodec) Close() error {
-	return c.conn.Close()
-}
 
-func (c *GobCodec) ReadBody(body interface{}) error {
-	return c.dec.Decode(body)
-}
-
-func (c *GobCodec) ReadHeader(h *Header) error {
+func(c *GobCodec)ReadHeader(h *Header)error{
 	return c.dec.Decode(h)
 }
 
-func (c *GobCodec) Write(h *Header, body interface{}) error {
+func(c *GobCodec)ReadBody(body interface{})error{
+	return c.dec.Decode(body)
+}
+
+func (g *GobCodec)Write(h *Header,body interface{}) (err error) {
 	defer func ()  {
-		err  := c.buf.Flush()
+		_ = g.buf.Flush()
 		if err != nil {
-			_ = c.Close()
+			_ = g.Close()
 		}
 	}()
-	if err := c.enc.Encode(h);err != nil {
-		log.Println("rpc codec: gob error encoding header:",err)
+	if err := g.enc.Encode(h); err != nil {
+		log.Println("rpc codec:gob error encoding header:",err)
 		return err
 	}
-	if err := c.enc.Encode(body);err != nil {
-		log.Println("rpc codec: gob error encoding body:",err)
+	if err := g.enc.Encode(body);err!=nil {
+		log.Println("rpc codec:gob error encoding body:",err)
 		return err
 	}
 	return nil
 }
 
-
+func (g *GobCodec) Close() error {
+	return g.conn.Close()
+}

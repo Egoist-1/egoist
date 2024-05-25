@@ -29,6 +29,3 @@ down:
 	# @docker compose -f prometheus.yml 	 	down
 	@docker compose -f rabbit.yml			down
 	@docker compose -f redis.yml 		 	down
-d:
-	@sudo systemctl start docker
-	@sudo systemctl stop  docker
