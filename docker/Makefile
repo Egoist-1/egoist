@@ -8,13 +8,13 @@ network:
 up:
 	@docker compose -f es.yml 			up 		-d
 	@docker compose -f etcd.yml 		up 		-d
-	# @docker compose -f filebeat.yml 	up		-d
+	@#docker compose -f filebeat.yml 	up		-d
 	@docker compose -f kafka.yml		up		-d
 	@docker compose -f mongodb.yml 		up 		-d
 	@docker compose -f mysql.yml 		up 		-d
-	# @docker compose -f nginx.tml		up		-d
-	@docker compose -f portainer.yml 	up 		-d
-	# @docker compose -f prometheus.yml up 		-d
+	@#docker compose -f nginx.tml		up		-d
+	@#docker compose -f portainer.yml 	up 		-d
+	@#docker compose -f prometheus.yml 	up 		-d
 	@docker compose -f rabbit.yml		up		-d
 	@docker compose -f redis.yml 		up 		-d
 down:
@@ -24,8 +24,8 @@ down:
 	@docker compose -f kafka.yml	 		down
 	@docker compose -f mongodb.yml 		 	down
 	@docker compose -f mysql.yml 		 	down
-	# @docker compose -f nginx.tml	 		down
-	@docker compose -f portainer.yml 	 	down
-	# @docker compose -f prometheus.yml 	 	down
+	@#docker compose -f nginx.tml	 		down
+	@#docker compose -f portainer.yml 	 	down
+	@#docker compose -f prometheus.yml 		down
 	@docker compose -f rabbit.yml			down
 	@docker compose -f redis.yml 		 	down

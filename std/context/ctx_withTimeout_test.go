@@ -9,7 +9,7 @@ import (
 
 // Context 计时退出
 func TestWithTimeout(t *testing.T) {
-	ctx, cancelFunc := context.WithTimeout(context.Background(), time.Second*2)
+	ctx, cancelFunc := context.WithTimeout(context.Background(), time.Second*10)
 	go func(ctx context.Context) {
 		for {
 			select {

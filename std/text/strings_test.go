@@ -5,20 +5,22 @@ import (
 	"strings"
 	"testing"
 	"unicode"
-) 
+	"unicode/utf8"
+)
 
-//综合易用性和性能，一般推荐使用 strings.Builder 来拼接字符串。
-func Test_stringsV1(t *testing.T)  {
-	fmt.Println(strings.ContainsAny("failu re", "z & i"))//t
+// 综合易用性和性能，一般推荐使用 strings.Builder 来拼接字符串。
+func Test_stringsV1(t *testing.T) {
+	fmt.Println(strings.ContainsAny("failu re", "z & i")) //t
 	//当 sep 为空时，Count 的返回值是：utf8.RuneCountInString(s) + 1
 	fmt.Println(strings.Count("1231", ""))
 	//字符串分割, s
 	fmt.Printf("Fields are: %q\n", strings.Fields("  foo bar  baz   "))
-	fmt.Printf("Fields are: %q\n", strings.FieldsFunc("  foo bar  baz   ",func(r rune) bool {
+	fmt.Printf("Fields are: %q\n", strings.FieldsFunc("  foo bar  baz   ", func(r rune) bool {
 		if r == 'f' {
 			return true
 		}
-		return  false}))
+		return false
+	}))
 	//split	sep == "" 表示分割所有
 	fmt.Printf("%q\n", strings.Split("foo,bar,baz", ","))
 	fmt.Printf("%q\n", strings.SplitAfter("foo,bar,baz", ","))
@@ -26,7 +28,7 @@ func Test_stringsV1(t *testing.T)  {
 	fmt.Printf("%q\n", strings.SplitN("foo,bar,baz", ",", -1))
 	//index lastindex
 	//
-	fmt.Println(strings.Repeat("ha",5))
+	fmt.Println(strings.Repeat("ha", 5))
 	//替换
 	mapping := func(r rune) rune {
 		switch {
@@ -48,4 +50,10 @@ func Test_stringsV1(t *testing.T)  {
 	//全部大写
 	//func ToTitle(s string) string
 	//func ToTitleSpecial(c unicode.SpecialCase, s string) string
+}
+
+func TestLen(t *testing.T) {
+	str := "你好世界"
+	fmt.Println(utf8.RuneCount([]byte(str)))
+	fmt.Println(utf8.RuneCountInString(str))
 }

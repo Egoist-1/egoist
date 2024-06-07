@@ -1,19 +1,39 @@
 version: '3'
 services:
   kafka:
-   image: 'bitnami/kafka:3.3.1'
+   image: 'bitnami/kafka:3.6.0'
+#   image: 'bitnami/kafka:3.3.1'
    container_name: "kafka"
-   restart: 'no'  
+   restart: 'no'
    networks:
       - my-network
    ports:
-     - 9192:9092
-     - 9193:9093
+     - '9092:9092'
+     - '9094:9094'
+
    environment:
-     ### 通用配置
-     # 允许使用kraft，即Kafka替代Zookeeper
-     - KAFKA_ENABLE_KRAFT=yes
+     - KAFKA_CFG_NODE_ID=0
+     #      - 允许自动创建 topic，线上不要开启,导致创造了很多topic,影响broker的性能
+     - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+#     -
+     - KAFKA_CFG_PROCESS_ROLES=controller,broker
+#     -外部连的9094端口,docker内部的9092
+     - KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9092,CONTROLLER://:9093,EXTERNAL://0.0.0.0:9094
+#     -
+     - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,EXTERNAL://localhost:9094
+#     -
+     - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+#     -
+     - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+#     -
+     - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+#     - KAFKA_ENABLE_KRAFT=yes
 networks:
-  my-network: 
+  my-network:
     external: true
     name: egoist
+
+# opt/bitnami/kafka/bin
+#iptables false
+#"credStore": "desktop.exe"
+

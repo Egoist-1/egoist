@@ -1,8 +1,9 @@
-package rpc
+package geerpc
 
 import (
-	"7day/7day/rpc/codec"
+	"7day/7day/geerpc/codec"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net"
@@ -53,6 +54,7 @@ func (server *Server) Accept(lis net.Listener) {
 		go server.ServeConn(conn)
 	}
 }
+func Accept(lis net.Listener) { DefaultServer.Accept(lis) }
 
 func (server *Server) ServeConn(conn io.ReadWriteCloser) {
 	defer func() { _ = conn.Close() }()
@@ -112,6 +114,33 @@ func (server *Server) readRequestHeader(cc codec.Codec) (*codec.Header, error) {
 	return &h, nil
 }
 
-func(Server *Server)readrequest(cc codec.Codec)(*request,error){
+func (Server *Server) readRequest(cc codec.Codec) (*request, error) {
+	h, err := Server.readRequestHeader(cc)
+	if err != nil {
+		return nil, err
+	}
+	req := &request{h: h}
+	// TODO: now we don't know the type of request argv
+	// dat 1,just suppose it's string
 
+	if err := cc.ReadBody(req.argv.Interface()); err != nil {
+		log.Println("rpc server: read argv err:", err)
+	}
+	return req, err
+}
+
+func (server *Server) sendResponse(cc codec.Codec, h *codec.Header, body interface{}, sending *sync.Mutex) {
+	sending.Lock()
+	defer sending.Unlock()
+	if err := cc.Write(h, body); err != nil {
+		log.Println("rpc server write response error:", err)
+	}
+}
+func (server *Server) handleRequest(cc codec.Codec, req *request, sending *sync.Mutex, wg *sync.WaitGroup) {
+	// TODO, should call registered rpc methods to get the right replyv
+	// day 1, just print argv and send a hello message
+	defer wg.Done()
+	log.Println(req.h, req.argv.Elem())
+	req.replyv = reflect.ValueOf(fmt.Sprintf("geerpc resp %d", req.h.Seq))
+	server.sendResponse(cc, req.h, req.replyv.Interface(), sending)
 }

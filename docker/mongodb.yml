@@ -1,4 +1,4 @@
-version: '3.1'
+version: '3'
 services:
   mongo:
     image: mongo:7.0.10-rc0
@@ -14,7 +14,7 @@ services:
       - ./mongo/data/configdb:/data/configdb
       - ./mongo/data/logs:/data/logs
       #启动参数 --auth 连接需要用户名和密码
-    command: --auth
+#    command: --auth
     networks:
       - my-network
 networks:

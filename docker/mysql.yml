@@ -19,6 +19,6 @@ services:
     networks:
       - my-network
 networks:
-  my-network: 
+  my-network:
     external: true
     name: egoist
