@@ -33,3 +33,12 @@ ingressController
 	ingress 时你的配置.ingressController时执行这些配置的
 	
 ```
+
+
+```
+ingress-enginx
+helm upgrade --install ingress-nginx ingress-nginx \
+--repo https://kubernetes.github.io/ingress-nginx \
+--namespace ingress-nginx --create-namespace
+//helm k8s的包管理工具
+```

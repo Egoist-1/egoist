@@ -1,0 +1,167 @@
+version: '3'
+services:
+  zipkin:
+    #    用的是不支持 Kafka 之类的简化版本
+    image: openzipkin/zipkin-slim:2.24
+    ports:
+      - '9411:9411'
+  prometheus:
+    image: prom/prometheus:v2.47.2
+    volumes:
+      #      - 将本地的 prometheus 文件映射到容器内的配置文件
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yml
+    ports:
+      #      - 访问数据的端口
+      - 9090:9090
+  redis:
+    image: redis:7.2.4
+    container_name: redis
+    restart: 'no'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - http.host=0.0.0.0
+    ports:
+      - 6379:6379
+    networks:
+      - my-network
+    volumes:
+      - ./redis/data:/data:rw
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq
+    restart: 'no'
+    ports:
+      - 5672:5672
+      - 15672:15672
+      - 25672:25672
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+  portainer:
+    #    portainer来查看可视化容器页面：
+    image: portainer/portainer-ce:2.16.0
+    container_name: portainer
+    ports:
+      - 9000:9000
+    restart: no
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+#      - ./portainer/data:/data:rw
+  mysql:
+    image: mysql:8.0
+    container_name: mysql8.0
+    restart: 'no'
+    command:
+      # --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/conf:/etc/mysql/conf.d
+      - ./mysql/log:/var/log/mysql
+    networks:
+      - my-network
+  mongo:
+    image: mongo:7.0.10-rc0
+    container_name: mongodb
+    restart: 'no'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    ports:
+      - 27017:27017
+    volumes:
+      - ./mongo/data/db:/data/db
+      - ./mongo/data/configdb:/data/configdb
+      - ./mongo/data/logs:/data/logs
+      #启动参数 --auth 连接需要用户名和密码
+    #    command: --auth
+    networks:
+      - my-network
+  kafka:
+    image: 'bitnami/kafka:3.6.0'
+    #   image: 'bitnami/kafka:3.3.1'
+    container_name: "kafka"
+    restart: 'no'
+    networks:
+      - my-network
+    ports:
+      - '9092:9092'
+      - '9094:9094'
+    environment:
+      - KAFKA_CFG_NODE_ID=0
+      #      - 允许自动创建 topic，线上不要开启,导致创造了很多topic,影响broker的性能
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+      #     -
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      #     -外部连的9094端口,docker内部的9092
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9092,CONTROLLER://:9093,EXTERNAL://0.0.0.0:9094
+      #     -
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,EXTERNAL://localhost:9094
+      #     -
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      #     -
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+      #     -
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+  #     - KAFKA_ENABLE_KRAFT=yes
+  grafana:
+    image: grafana/grafana-enterprise:10.2.0
+    ports:
+      - 3000:3000
+  etcd:
+    image: 'bitnami/etcd:3.4.32'
+    container_name: etcd
+    restart: 'no'
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+    ports:
+      - 2379:2379
+    networks:
+      - my-network
+  elasticsearch:
+    image: elasticsearch:7.12.1
+    container_name: elasticsearch
+    restart: 'no'
+    environment:
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - cluster.name=docker-cluster #集群名称
+      - discovery.type=single-node  #单节点启动
+      - http.host=0.0.0.0
+    volumes:
+      - ./es/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./es/data:/usr/share/elasticsearch/data
+      - ./es/logs:/usr/share/elasticsearch/logs
+      - ./es/plugins:/usr/share/elasticsearch/plugins
+    ports:
+      - 9200:9200
+    networks:
+      - my-network
+  kibana:
+    image: kibana:7.12.1
+    container_name: kibana
+    restart: 'no'
+    environment:
+      ELASTICSERCH_HOSTS: http://elk:9200
+      I18N_LOCALE: zh-CN
+    ports:
+      - 5601:5601
+    networks:
+      - my-network
+    # 简单的ES集群监控工具
+    # cerebro:
+    #   image: lmenezes/cerebro:0.9.2
+    #   container_name: cerebro
+    #   restart: always
+    #   ports:
+    #     - "9000:9000"
+    #   command:
+    #      - -Dhosts.0.host=http://elk-es:9200
+networks:
+  my-network:
+    external: true
+    name: egoist
