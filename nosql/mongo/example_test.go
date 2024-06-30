@@ -108,6 +108,7 @@ func TestMongo1(t *testing.T) {
 	err = inRes.All(ctx, &ars)
 	assert.NoError(t, err)
 
+	//创建索引
 	idxRes, err := col.Indexes().CreateMany(ctx, []mongo.IndexModel{
 		{
 			Keys:    bson.M{"id": 1},
