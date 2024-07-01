@@ -7,7 +7,7 @@ import (
 
 var addrs = []string{"localhost:9094"}
 
-func TestProd(t *testing.T) {
+func TestSyncProducer(t *testing.T) {
 	cfg := sarama.NewConfig()
 }
 
