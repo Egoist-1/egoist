@@ -1,12 +1,14 @@
-.PHONY: docker
-docker:
-	@rm -f webook || true
-	@docker rmi -f egoist/webook:v0.01 || true
-	@set GOOS=linux set GOARCH=arm
-	@go build -o webook .
-	@docker build -t egoist/webook:v0.0.1 .
+.PHONY:webook
+front:
+	@cd webook_fe && npm run dev
+back:
+	@./setup.sh
+kratos:
+#make kratos project=?
+	@cd webook && kratos new $(project_name) -r https://gitee.com/go-kratos/kratos-layout.git
+buf:
 mock:
-	@go generate ./...
-	@go mod tidy
-tidy:
-	@go mod tidy
+docker:
+	@cd webook && docker-compose up -d
+create:
+	@./create.sh $(name)
