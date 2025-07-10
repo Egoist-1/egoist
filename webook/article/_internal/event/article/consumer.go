@@ -37,5 +37,5 @@ func (c InteractiveConsumer) Start() error {
 func (c InteractiveConsumer) Consume(message *sarama.ConsumerMessage, t ReadEvent) error {
 	ctx, cancle := context.WithTimeout(context.Background(), time.Second)
 	defer cancle()
-	return c.repo.IncrReadCnt(ctx, t.Aid)
+	return c.repo.IncrReadCnt(ctx, int(t.Aid))
 }

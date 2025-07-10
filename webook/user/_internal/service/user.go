@@ -11,7 +11,7 @@ import (
 type UserService interface {
 	Signup(ctx context.Context, user domain.User) (id int64, err error)
 	Profile(ctx context.Context, uid int64) (domain.User, error)
-	LoginEmail(ctx context.Context, email string, password string) (int64, error)
+	LoginByEmail(ctx context.Context, email string, password string) (int64, error)
 	Edit(ctx context.Context, u domain.User) error
 	LoginByPhone(ctx context.Context, phone string) (int64, error)
 }
@@ -28,7 +28,7 @@ func (svc userServiceImpl) Edit(ctx context.Context, u domain.User) error {
 	return svc.repo.Edit(ctx, u)
 }
 
-func (svc userServiceImpl) LoginEmail(ctx context.Context, email string, password string) (uid int64, err error) {
+func (svc userServiceImpl) LoginByEmail(ctx context.Context, email string, password string) (uid int64, err error) {
 	u, err := svc.repo.FindByEmail(ctx, email)
 	if err != nil {
 		return 0, err

@@ -1,4 +1,4 @@
-package web
+package artVO
 
 type UnpublishList struct {
 }

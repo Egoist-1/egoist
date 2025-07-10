@@ -1,18 +1,26 @@
 <template>
     <div class="login">
-       ???
+        <p>hello</p>
+        <div class="qrcode">
+        </div>
+        <div class="login_box">
+        </div>
     </div>
-</template>>
+</template>
 
- 
 <script setup lang="ts" name="Login">
+
 </script>
-<!-- scope : 局部样式 -->
 <style scoped>
-    .person{
-        background-color: rgb(46, 22, 22);
-        box-shadow: 0 0 10px;
-        border-radius: 10px;
-        padding: 20px;                   
-    }
+.login {
+    width: 50%;
+    height: 50%;
+    background-color: #808080;
+}
+
+.login_box {
+}
+
+.qrcode {
+}
 </style>

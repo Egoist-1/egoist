@@ -1,4 +1,4 @@
-package web
+package userVO
 
 type ProfileVO struct {
 	Name    string

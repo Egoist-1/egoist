@@ -3,7 +3,7 @@ package memory
 import (
 	"context"
 	"fmt"
-	"webook/_basicServer/sms/service/sms"
+	"webook/sms/_internal/service/sms"
 )
 
 type memory struct {

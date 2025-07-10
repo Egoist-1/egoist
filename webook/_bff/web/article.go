@@ -7,21 +7,24 @@ import (
 	"golang.org/x/sync/errgroup"
 	"net/http"
 	"strconv"
-	domain2 "webook/article/_internal/domain"
-	service2 "webook/article/_internal/service"
-	"webook/interactive/_internal/domain"
-	"webook/interactive/_internal/service"
+	"webook/_bff/web/artVO"
+	artDomain "webook/article/_internal/domain"
+	artSvc "webook/article/_internal/service"
+	intrDomain "webook/interactive/_internal/domain"
+	intSvc "webook/interactive/_internal/service"
 	"webook/pkg/er"
 	"webook/pkg/ginx/middlewares/jwtx"
 )
 
+var _ handle = (*ArticleHandle)(nil)
+
 type ArticleHandle struct {
-	svc     service2.ArticleService
-	intrSvc service.InteractiveService
+	svc     artSvc.ArticleService
+	intrSvc intSvc.InteractiveService
 	biz     string
 }
 
-func NewArticleHandle(svc service2.ArticleService, intrSvc service.InteractiveService) *ArticleHandle {
+func NewArticleHandle(svc artSvc.ArticleService, intrSvc intSvc.InteractiveService) *ArticleHandle {
 	return &ArticleHandle{
 		svc:     svc,
 		intrSvc: intrSvc,
@@ -63,11 +66,11 @@ func (h *ArticleHandle) edit(ctx *gin.Context) {
 		ctx.AbortWithStatus(http.StatusBadRequest)
 	}
 	uc := claims.(*jwtx.UserClaims)
-	art := domain2.Article{
+	art := artDomain.Article{
 		Id:      req.Id,
 		Title:   req.Title,
 		Content: req.Content,
-		Author: domain2.Author{
+		Author: artDomain.Author{
 			Id: uc.Id,
 		},
 	}
@@ -93,11 +96,11 @@ func (h *ArticleHandle) publish(ctx *gin.Context) {
 		ctx.AbortWithStatus(http.StatusBadRequest)
 	}
 	uc := claims.(*jwtx.UserClaims)
-	art := domain2.Article{
+	art := artDomain.Article{
 		Id:      req.Id,
 		Title:   req.Title,
 		Content: req.Content,
-		Author: domain2.Author{
+		Author: artDomain.Author{
 			Id: uc.Id,
 		},
 	}
@@ -217,8 +220,8 @@ func (h *ArticleHandle) pubDetail(ctx *gin.Context) {
 	}
 	var (
 		eg   errgroup.Group
-		art  domain2.Article
-		intr domain.Interactive
+		art  artDomain.Article
+		intr intrDomain.Interactive
 	)
 	//文章详情
 	eg.Go(func() error {
@@ -244,7 +247,7 @@ func (h *ArticleHandle) pubDetail(ctx *gin.Context) {
 		return
 	}
 
-	var vo PubDetailVo = PubDetailVo{
+	var vo artVO.PubDetailVo = artVO.PubDetailVo{
 		Id:         aid,
 		Title:      art.Title,
 		Content:    art.Content,

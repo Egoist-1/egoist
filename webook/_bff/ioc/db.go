@@ -20,6 +20,9 @@ func InitGorm() *gorm.DB {
 			LogLevel:                  logger.Info,
 		}),
 	})
+	if err != nil {
+		panic(err)
+	}
 	err = dao.InitTables(db)
 	if err != nil {
 		panic(err)

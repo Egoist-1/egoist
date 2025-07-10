@@ -50,7 +50,7 @@ func (dao *articleGormDao) SyncStatus(ctx context.Context, aid int64) error {
 
 func (dao *articleGormDao) PubList(ctx context.Context, uid int64, limit int, offset int) ([]ArticlePublish, error) {
 	var arts []ArticlePublish
-	err := dao.db.WithContext(ctx).
+	err := dao.db.WithContext(ctx).Unscoped().
 		Model(&Article{}).
 		Select("id,time,status,author_id,ctime,utime").
 		Where("Author_id = ?", uid).

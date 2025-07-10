@@ -60,7 +60,7 @@ func (dao *intrDao) CancelCollection(ctx context.Context, biz string, uid int64,
 	return dao.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		tx.Model(&Interactive{}).
 			Where("biz = ? and uid = ? and cid = ?", biz, uid, cid).
-			Update()
+			Update("", nil)
 		err := tx.Model(&UserIntrInfo{}).
 			Where("biz = ? and uid = ? aid = ?", biz, uid, aid).
 			Update("collected = ?", false).

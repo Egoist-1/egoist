@@ -2,19 +2,31 @@ package main
 
 import (
 	"fmt"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+	"log"
 	"net/http"
+	_ "net/http/pprof"
 )
 
 func main() {
 	initViper()
 	initLogger()
+	//pprof
 	go func() {
-		http.ListenAndServe(":9090", http.DefaultServeMux)
+		log.Println(http.ListenAndServe(":6060", nil))
+	}()
+	//prometheus
+	go func() {
+		fmt.Printf("prometheus start")
+		http.Handle("/metrics", promhttp.Handler())
+		err := http.ListenAndServe(":9091", nil)
+		fmt.Printf("prometheus err :%v", err)
 	}()
 	app := InitApp()
-	app.web.Run(viper.GetString("web.port"))
+	app.web.Run(":3001")
 }
 
 func initViper() {
@@ -31,6 +43,7 @@ func initLogger() {
 	if err != nil {
 		panic(err)
 	}
+	zap.NewAtomicLevelAt(zapcore.DebugLevel)
 	// 设置了全局的 logger，
 	// 你在你的代码里面就可以直接使用 zap.XXX 来记录日志
 	zap.ReplaceGlobals(logger)

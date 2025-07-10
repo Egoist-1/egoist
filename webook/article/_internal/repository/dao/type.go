@@ -14,3 +14,15 @@ type ArticleDao interface {
 	PubList(ctx context.Context, uid int64, limit int, offset int) ([]ArticlePublish, error)
 	SyncStatus(ctx context.Context, aid int64) error
 }
+
+type Article struct {
+	Id       int64
+	Title    string
+	Content  string
+	Status   uint
+	AuthorId int64
+	Ctime    int64
+	Utime    int64
+}
+
+type ArticlePublish Article

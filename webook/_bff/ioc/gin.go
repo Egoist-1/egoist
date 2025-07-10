@@ -9,7 +9,7 @@ import (
 
 func InitWebServer(userhandle *web.UserHandle) *gin.Engine {
 	s := gin.Default()
-	s.Use(GinMiddlewares()...)
+	//s.Use(GinMiddlewares()...)
 	userhandle.RegisterRouter(s)
 	//artHandle.RegisterRouter(s)
 	return s

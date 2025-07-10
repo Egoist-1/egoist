@@ -4,11 +4,9 @@ services:
     mysql:
         image: mysql:8.4.5
         restart: always
-        command: --default-authentication-plugin=mysql_native_password
         environment:
             MYSQL_ROOT_PASSWORD: root
         volumes:
-#            挂在目录
             - ./script/mysql/:/docker-entrypoint-initdb.d/
         ports:
           - 3306:3306
@@ -20,16 +18,68 @@ services:
 #            - REDIS_PASSWORD=root
         ports:
           - 6379:6379
-    # # kafka:
-    # mongodb:
-    # etcd
-    # minio:
+    nginx:
+        image: nginx:1.27.5
+        volumes:
+            - ./script/nginx/nginx.conf:/etc/nginx/nginx.conf
+        ports:
+            - "8080:80"
+        environment:
+            - NGINX_HOST=foobar.com
+            - NGINX_PORT=80
+    etcd:
+        image: 'bitnami/etcd:3.5.9'
+        environment:
+            - ALLOW_NONE_AUTHENTICATION=yes
+        ports:
+            #      所以你要用 12379 端口来连接 etcd
+            - 2377:2379
+    minio:
+        image: minio/minio:RELEASE.2025-05-24T17-08-30Z
+        ports:
+            - "9000:9000"
+            - "9001:9001"
+        environment:
+            MINIO_ROOT_USER: rootABCD
+            MINIO_ROOT_PASSWORD: rootABCD
+        volumes:
+            - ./script/minio/data:/data
+        command: server /data --console-address ":9001"
+    kafka:
+        image: 'bitnami/kafka:3.6.0'
+        ports:
+            - '9092:9092'
+            - '9094:9094'
+        environment:
+            - KAFKA_CFG_NODE_ID=0
+            #      - 允许自动创建 topic，线上不要开启
+            - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+            - KAFKA_CFG_PROCESS_ROLES=controller,broker
+            - KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9092,CONTROLLER://:9093,EXTERNAL://0.0.0.0:9094
+            - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,EXTERNAL://localhost:9094
+            - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+            - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+            - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+    prometheus:
+        image: prom/prometheus:v2.47.2
+        volumes:
+            #      - 将本地的 prometheus 文件映射到容器内的配置文件
+            - ./prometheus.yaml:/etc/prometheus/prometheus.yaml
+        ports:
+            #      - 访问数据的端口
+            - 9090:9090
+    grafana:
+        image: grafana/grafana-enterprise:10.2.0
+        ports:
+            - 3000:3000
+    zipkin:
+        #    用的是不支持 Kafka 之类的简化版本
+        image: openzipkin/zipkin-slim:2.24
+        ports:
+            - '9411:9411'
     # 可观测性
     # elasticsearch:
     # logstash:
     # kibana
-    # prometheus:
-    # zipkin:
-    # grafana:
     # 
     # canal:

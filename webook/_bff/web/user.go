@@ -6,7 +6,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
 	"go.uber.org/zap"
+	"math/rand/v2"
 	"net/http"
+	"time"
+	"webook/_bff/web/userVO"
 	"webook/pkg/er"
 	"webook/pkg/ginx/middlewares/jwtx"
 	"webook/user/_internal/domain"
@@ -25,6 +28,13 @@ type UserHandle struct {
 }
 
 func (h *UserHandle) RegisterRouter(server *gin.Engine) {
+	server.GET("/hello", func(context *gin.Context) {
+		for _ = range 10 {
+			go func() {
+				time.Sleep(time.Second * time.Duration(rand.IntN(20)))
+			}()
+		}
+	})
 	g := server.Group("/user")
 	g.POST("/signup", h.signup)
 	g.POST("/login", h.login)
@@ -55,7 +65,7 @@ func (h *UserHandle) profile(ctx *gin.Context) {
 	fmt.Println(er)
 	uc := claims.(*jwtx.UserClaims)
 	u, err := h.svc.Profile(ctx, uc.Id)
-	var profile ProfileVO
+	var profile userVO.ProfileVO
 	copier.Copy(&profile, &u)
 	HandleErr(ctx, "简介", profile, err)
 }
@@ -132,7 +142,7 @@ func (h *UserHandle) login(ctx *gin.Context) {
 		ctx.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
-	uid, err := h.svc.LoginEmail(ctx, req.Email, req.Password)
+	uid, err := h.svc.LoginByEmail(ctx, req.Email, req.Password)
 	ok := HandleErr(ctx, "登录成功", nil, err)
 	if !ok {
 		return
